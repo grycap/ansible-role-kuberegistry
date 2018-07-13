@@ -31,4 +31,3 @@ spec:
           httpGet:
             path: /
             port: 5000
-
