@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: registry
+  namespace: docker-registry
+spec:
+{% if public_access %}
+  type: NodePort
+{% endif %}
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+{% if public_access %}
+      nodePort: 31111
+{% endif %}
+  selector:
+    app: registry

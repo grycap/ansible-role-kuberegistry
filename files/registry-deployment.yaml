@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: registry
+  namespace: docker-registry
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: registry
+    spec:
+      volumes:
+      - name: registry-data
+        persistentVolumeClaim:
+          claimName: registry-pv-claim
+      containers:
+      - name: registry
+        volumeMounts:
+        - name: registry-data 
+          mountPath: /var/lib/registry
+        image: registry:2
+        ports:
+        - containerPort: 5000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+

@@ -1,0 +1,2 @@
+# Enable access from outside the cluster (NodePort 31111)
+public_access: false
