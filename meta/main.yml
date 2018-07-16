@@ -1,4 +1,5 @@
 galaxy_info:
+  role_name: kuberegistry
   author: serisgal@inf.upv.es
   description: Install Docker Registry using a Kubernetes Cluster
   company: GRyCAP
