@@ -15,11 +15,20 @@ spec:
       - name: registry-data
         persistentVolumeClaim:
           claimName: registry-pv-claim
+    {% if enable_secure %}
+      - name: certs
+        configMap:
+          name: registry-certs
+    {% endif %}
       containers:
       - name: registry
         volumeMounts:
         - name: registry-data 
           mountPath: /var/lib/registry
+      {% if enable_secure %}
+        - name: certs
+          mountPath: /certs
+      {% endif %}
         image: registry:2
         ports:
         - containerPort: 5000
@@ -31,3 +40,13 @@ spec:
           httpGet:
             path: /
             port: 5000
+      {% if enable_secure %}
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:5000
+        - name: REGISTRY_HTTP_TLS_CERTIFICATE
+          value: /certs/cert.crt
+        - name: REGISTRY_HTTP_TLS_KEY
+          value: /certs/cert.key
+      {% endif %}
+            

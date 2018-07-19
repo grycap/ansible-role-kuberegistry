@@ -1,2 +1,8 @@
 # Enable access from outside the cluster (NodePort 31111)
 public_access: false
+# Type of node can be "front" or "wn"
+type_of_node: "front"
+# Enable security using self-signed certificates
+enable_secure: true
+# Service domain name (Example: registry.docker-registry)
+svc_name: ""

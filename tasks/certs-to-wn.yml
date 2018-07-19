@@ -1,0 +1,5 @@
+---
+- name: Copy the CA certificate to docker certs directory
+  copy:
+    src: /opt/docker_registry/certs/domain.crt
+    dest: /etc/docker/certs.d/{{ svc_name }}:5000/ca.crt

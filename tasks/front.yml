@@ -1,0 +1,22 @@
+---
+- name: Create docker-registry namespace
+  command: kubectl create namespace docker-registry
+
+- name: Create SSL key and certificate
+  include: "ssl.yaml"
+  when: enable_secure
+
+- name: Create Persistent Volume Claim
+  block:
+    - copy: src=registry-pvc.yaml dest=/tmp/registry-pvc.yaml
+    - command: kubectl create -f /tmp/registry-pvc.yaml
+
+- name: Create deployment
+  block:
+    - template: src=registry-deployment.j2 dest=/tmp/registry-deployment.yaml
+    - command: kubectl create -f /tmp/registry-deployment.yaml
+
+- name: Create Service
+  block:
+    - template: src=registry-svc.j2 dest=/tmp/registry-svc.yaml
+    - command: kubectl create -f /tmp/registry-svc.yaml
