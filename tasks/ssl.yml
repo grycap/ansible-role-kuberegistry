@@ -12,7 +12,12 @@
 - name: Save key and certs into a configMap 
   command: kubectl create configmap registry-certs --from-file=/opt/docker_registry/certs/ --namespace="docker-registry"
 
-- name: Copy the CA certificate to docker certs directory
+- name: Create '{{ svc_name }}:5000' directory in docker certs.d
+  file:
+    path: "/etc/docker/certs.d/{{ svc_name }}:5000"
+    state: directory
+
+- name: Copy the CA certificate to docker certs.d/{{ svc_name }}:5000 directory
   copy:
     src: /opt/docker_registry/certs/domain.crt
     dest: /etc/docker/certs.d/{{ svc_name }}:5000/ca.crt
