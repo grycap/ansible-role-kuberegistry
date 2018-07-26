@@ -28,7 +28,25 @@ spec:
 {% if enable_secure %}
         - name: certs
           mountPath: /certs
-{% endif %}
+        image: registry:2
+        ports:
+        - containerPort: 443
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 443
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:443
+        - name: REGISTRY_HTTP_TLS_CERTIFICATE
+          value: /certs/domain.crt
+        - name: REGISTRY_HTTP_TLS_KEY
+          value: /certs/domain.key
+{% else %}
         image: registry:2
         ports:
         - containerPort: 5000
@@ -40,13 +58,5 @@ spec:
           httpGet:
             path: /
             port: 5000
-{% if enable_secure %}
-        env:
-        - name: REGISTRY_HTTP_ADDR
-          value: 0.0.0.0:5000
-        - name: REGISTRY_HTTP_TLS_CERTIFICATE
-          value: /certs/domain.crt
-        - name: REGISTRY_HTTP_TLS_KEY
-          value: /certs/domain.key
 {% endif %}
             
