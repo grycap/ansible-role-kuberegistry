@@ -9,6 +9,16 @@
   args:
     chdir: "/opt/docker_registry/certs"
 
+- name: Create the client key
+  command: openssl genrsa -out client.key 4096
+  args:
+    chdir: "/opt/docker_registry/certs"
+
+- name: Create the client cert
+  command: openssl req -new -x509 -text -key client.key -out client.cert
+  args:
+    chdir: "/opt/docker_registry/certs"
+
 - name: Save key and certs into a configMap 
   command: kubectl create configmap registry-certs --from-file=/opt/docker_registry/certs/ --namespace="docker-registry"
 
@@ -22,3 +32,12 @@
     src: /opt/docker_registry/certs/domain.crt
     dest: /etc/docker/certs.d/{{ svc_name }}/ca.crt
     remote_src: yes
+
+- name: Copy the client key and cert to docker certs.d/{{ svc_name }} directory
+  copy:
+    src: /opt/docker_registry/certs/{{ item }}
+    dest: /etc/docker/certs.d/{{ svc_name }}
+    remote_src: yes
+  with_items:
+    - client.key
+    - client.cert

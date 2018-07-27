@@ -8,3 +8,11 @@
   copy:
     src: /opt/docker_registry/certs/domain.crt
     dest: /etc/docker/certs.d/{{ svc_name }}/ca.crt
+
+- name: Copy the client key and cert to docker certs.d/{{ svc_name }} directory
+  copy:
+    src: /opt/docker_registry/certs/{{ item }}
+    dest: /etc/docker/certs.d/{{ svc_name }}
+  with_items:
+    - client.key
+    - client.cert
