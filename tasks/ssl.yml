@@ -5,7 +5,7 @@
     state: directory
 
 - name: Create the CA private key and certificate
-  command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 365 -out domain.crt -subj "/CN={{ svc_name }}"
+  command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 365 -out domain.crt -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_location }}/O={{ ssl_organization }}/OU={{ ssl_organizational_unit }}/CN={{ svc_name }}"
   args:
     chdir: "/opt/docker_registry/certs"
 
@@ -32,12 +32,3 @@
     src: /opt/docker_registry/certs/domain.crt
     dest: /etc/docker/certs.d/{{ svc_name }}/ca.crt
     remote_src: yes
-
-- name: Copy the client key and cert to docker certs.d/{{ svc_name }} directory
-  copy:
-    src: /opt/docker_registry/certs/{{ item }}
-    dest: /etc/docker/certs.d/{{ svc_name }}
-    remote_src: yes
-  with_items:
-    - client.key
-    - client.cert
