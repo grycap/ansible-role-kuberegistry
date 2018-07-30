@@ -31,14 +31,6 @@ spec:
         image: registry:2
         ports:
         - containerPort: 443
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 443
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 443
         env:
         - name: REGISTRY_HTTP_ADDR
           value: 0.0.0.0:443
@@ -50,13 +42,5 @@ spec:
         image: registry:2
         ports:
         - containerPort: 5000
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 5000
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 5000
 {% endif %}
             
