@@ -7,16 +7,18 @@ metadata:
 spec:
 {% if public_access %}
   type: NodePort
+{% endif %}
   ports:
+{% if enable_secure %}
     - port: 443
       targetPort: 443
-      protocol: TCP
-      nodePort: 31111
 {% else %}
-  ports:
     - port: 5000
       targetPort: 5000
+{% endif %}
       protocol: TCP
+{% if public_access %}
+      nodePort: 31111
 {% endif %}
   selector:
     app: registry
