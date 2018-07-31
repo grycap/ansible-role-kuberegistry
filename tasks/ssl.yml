@@ -1,0 +1,24 @@
+---
+- name: Create directory for the docker certs
+  file:
+    path: "/opt/docker_registry/certs"
+    state: directory
+
+- name: Create the CA private key and certificate
+  command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 365 -out domain.crt -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_location }}/O={{ ssl_organization }}/OU={{ ssl_organizational_unit }}/CN={{ svc_name }}"
+  args:
+    chdir: "/opt/docker_registry/certs"
+
+- name: Save key and certs into a configMap 
+  command: kubectl create configmap registry-certs --from-file=/opt/docker_registry/certs/ --namespace="docker-registry"
+
+- name: Create '{{ svc_name }}' directory in docker certs.d
+  file:
+    path: "/etc/docker/certs.d/{{ svc_name }}"
+    state: directory
+
+- name: Copy the CA certificate to docker certs.d/{{ svc_name }} directory
+  copy:
+    src: /opt/docker_registry/certs/domain.crt
+    dest: /etc/docker/certs.d/{{ svc_name }}/ca.crt
+    remote_src: yes

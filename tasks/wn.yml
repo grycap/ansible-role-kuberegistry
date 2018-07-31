@@ -1,0 +1,4 @@
+---
+- name: Copy the generated certs
+  include: "certs-to-wn.yml"
+  when: enable_secure

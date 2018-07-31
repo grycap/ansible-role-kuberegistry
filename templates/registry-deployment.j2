@@ -15,19 +15,32 @@ spec:
       - name: registry-data
         persistentVolumeClaim:
           claimName: registry-pv-claim
+{% if enable_secure %}
+      - name: certs
+        configMap:
+          name: registry-certs
+{% endif %}
       containers:
       - name: registry
         volumeMounts:
         - name: registry-data 
           mountPath: /var/lib/registry
+{% if enable_secure %}
+        - name: certs
+          mountPath: /certs
+        image: registry:2
+        ports:
+        - containerPort: 443
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: 0.0.0.0:443
+        - name: REGISTRY_HTTP_TLS_CERTIFICATE
+          value: /certs/domain.crt
+        - name: REGISTRY_HTTP_TLS_KEY
+          value: /certs/domain.key
+{% else %}
         image: registry:2
         ports:
         - containerPort: 5000
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 5000
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 5000
+{% endif %}
+            
