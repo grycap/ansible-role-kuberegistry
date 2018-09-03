@@ -12,6 +12,7 @@ spec:
 {% if enable_secure %}
     - port: 443
       targetPort: 443
+  clusterIP: 10.106.195.1
 {% else %}
     - port: 5000
       targetPort: 5000

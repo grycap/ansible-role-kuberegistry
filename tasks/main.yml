@@ -1,3 +1,9 @@
 ---
 - name: Include "{{type_of_node}}" tasks
   include: "{{type_of_node}}.yml"
+
+- name: Add service name and IP to /etc/hosts file in all nodes
+  lineinfile:
+    dest: /etc/hosts
+    line: '10.106.195.1 {{ svc_name }}'
+  when: enable_secure
