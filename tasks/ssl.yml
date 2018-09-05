@@ -10,7 +10,7 @@
     chdir: "/opt/docker_registry/certs"
 
 - name: Save key and certs into a configMap 
-  command: kubectl create configmap registry-certs --from-file=/opt/docker_registry/certs/ --namespace="docker-registry" --dry-run -o yaml | kubectl apply -f -
+  shell: kubectl create configmap registry-certs --from-file=/opt/docker_registry/certs/ --namespace="docker-registry" --dry-run -o yaml | kubectl apply -f -
 
 - name: Create '{{ svc_name }}' directory in docker certs.d
   file:
