@@ -1,10 +1,28 @@
 ---
-- name: Create '{{ svc_name }}' directory in docker certs.d
-  file:
-    path: "/etc/docker/certs.d/{{ svc_name }}"
-    state: directory
+- name: Check if the certs are previously created
+  stat:
+    path: /etc/docker/certs.d/{{ svc_name }}/ca.crt
+  register: certs
 
-- name: Copy the CA certificate to docker certs.d/{{ svc_name }} directory
-  copy:
-    src: /opt/docker_registry/certs/domain.crt
-    dest: /etc/docker/certs.d/{{ svc_name }}/ca.crt
+- block:
+  - name: Create '{{ svc_name }}' directory in docker certs.d
+    file:
+      path: "/etc/docker/certs.d/{{ svc_name }}"
+      state: directory
+
+  - name: Copy {{ svc_name }}.cert file
+    copy:
+      dest: "/etc/docker/certs.d/{{ svc_name }}/{{ svc_name }}.cert"
+      src: "/opt/docker_registry/certs/{{ svc_name }}.cert"
+
+  - name: Copy {{ svc_name }}.key file
+    copy:
+      dest: "/etc/docker/certs.d/{{ svc_name }}/{{ svc_name }}.key"
+      src: "/opt/docker_registry/certs/{{ svc_name }}.key"
+
+  - name: Copy ca.crt file
+    copy:
+      dest: "/etc/docker/certs.d/{{ svc_name }}/ca.crt"
+      src: "/opt/docker_registry/certs/ca.crt"
+
+  when: not certs.stat.exists
