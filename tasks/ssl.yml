@@ -11,8 +11,28 @@
       path: "/opt/docker_registry/certs"
       state: directory
 
-  - name: Create the CA private key and certificate
-    command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 365 -out domain.crt -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_location }}/O={{ ssl_organization }}/OU={{ ssl_organizational_unit }}/CN={{ svc_name }}"
+  - name: Create the CA private key
+    command: openssl genrsa -out ca.key 4096
+    args:
+      chdir: "/opt/docker_registry/certs"
+  
+  - name: Create the CA certificate
+    command: openssl req -new -x509 -days 365 -key ca.key -out ca.crt  -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_location }}/O={{ ssl_organization }}/OU={{ ssl_organizational_unit }}/CN={{ svc_name }}"
+    args:
+      chdir: "/opt/docker_registry/certs"
+  
+  - name:  Create a passwordless private key
+    command: openssl genrsa -out client.key 4096
+    args:
+      chdir: "/opt/docker_registry/certs"
+  
+  - name:  Create a certificate request for the private key
+    command: openssl req -nodes -newkey rsa:2048 -keyout {{ svc_name }}.key -out {{ svc_name }}.csr -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_location }}/O={{ ssl_organization }}/OU={{ ssl_organizational_unit }}/CN={{ svc_name }}"
+    args:
+      chdir: "/opt/docker_registry/certs"
+  
+  - name:  Signing the certificates
+    command: openssl x509 -req -days 365 -in {{ svc_name }}.csr -CA ca.crt -CAkey ca.key -set_serial 01 -out {{ svc_name }}.cert
     args:
       chdir: "/opt/docker_registry/certs"
 
@@ -24,10 +44,22 @@
       path: "/etc/docker/certs.d/{{ svc_name }}"
       state: directory
 
-  - name: Copy the CA certificate to docker certs.d/{{ svc_name }} directory
+  - name: Copy {{ svc_name }}.cert file
     copy:
-      src: /opt/docker_registry/certs/domain.crt
-      dest: /etc/docker/certs.d/{{ svc_name }}/ca.crt
-      remote_src: yes
+      remote_src: True
+      dest: "/etc/docker/certs.d/{{ svc_name }}/{{ svc_name }}.cert"
+      src: "/opt/docker_registry/certs/{{ svc_name }}.cert"
+
+  - name: Copy {{ svc_name }}.key file
+    copy:
+      remote_src: True
+      dest: "/etc/docker/certs.d/{{ svc_name }}/{{ svc_name }}.key"
+      src: "/opt/docker_registry/certs/{{ svc_name }}.key"
+
+  - name: Copy ca.crt file
+    copy:
+      remote_src: True
+      dest: "/etc/docker/certs.d/{{ svc_name }}/ca.crt"
+      src: "/opt/docker_registry/certs/ca.crt"
 
   when: not certs.stat.exists

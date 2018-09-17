@@ -35,9 +35,9 @@ spec:
         - name: REGISTRY_HTTP_ADDR
           value: 0.0.0.0:443
         - name: REGISTRY_HTTP_TLS_CERTIFICATE
-          value: /certs/domain.crt
+          value: /certs/{{ svc_name }}.cert
         - name: REGISTRY_HTTP_TLS_KEY
-          value: /certs/domain.key
+          value: /certs/{{ svc_name }}.key
 {% else %}
         image: registry:2
         ports:
