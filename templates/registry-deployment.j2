@@ -15,6 +15,9 @@ spec:
       - name: registry-data
         persistentVolumeClaim:
           claimName: registry-pv-claim
+      - name: registry-auth
+        secret:
+          secretName: registry-htpasswd
 {% if enable_secure %}
       - name: certs
         configMap:
@@ -25,6 +28,8 @@ spec:
         volumeMounts:
         - name: registry-data 
           mountPath: /var/lib/registry
+        - name: registry-auth
+          mountPath: /auth
 {% if enable_secure %}
         - name: certs
           mountPath: /certs
@@ -38,9 +43,22 @@ spec:
           value: /certs/domain.crt
         - name: REGISTRY_HTTP_TLS_KEY
           value: /certs/domain.key
+        - name: REGISTRY_AUTH
+          value: htpasswd
+        - name: REGISTRY_AUTH_HTPASSWD_PATH
+          value: /auth/htpasswd
+        - name: REGISTRY_AUTH_HTPASSWD_REALM
+          value: Registry Realm
 {% else %}
         image: registry:2
         ports:
         - containerPort: 5000
+        env:
+        - name: REGISTRY_AUTH
+          value: htpasswd
+        - name: REGISTRY_AUTH_HTPASSWD_PATH
+          value: /auth/htpasswd
+        - name: REGISTRY_AUTH_HTPASSWD_REALM
+          value: Registry Realm
 {% endif %}
             

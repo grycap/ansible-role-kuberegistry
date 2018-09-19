@@ -8,6 +8,9 @@
   include: "ssl.yml"
   when: enable_secure
 
+- name: Create htpasswd file and secret to store credentials
+  include: "auth.yml"
+
 - name: Create Persistent Volume Claim
   block:
     - copy: src=registry-pvc.yml dest=/tmp/registry-pvc.yml

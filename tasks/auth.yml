@@ -1,0 +1,23 @@
+---
+- name: Check if htpasswd file exists
+  stat:
+    path: /opt/registry/auth/htpasswd
+  register: auth
+
+- name: Auth stuff
+  block:
+  - name: Create directory for the htpasswd file
+    file:
+      path: "/opt/registry/auth"
+      state: directory
+  
+  - name: Create the credentials
+    command: htpasswd -Bbc htpasswd admin {{ password }}
+    args:
+      chdir: "/opt/registry/auth"
+
+  - name: Create secret
+    shell: kubectl create secret generic registry-htpasswd --from-file=/opt/registry/auth/htpasswd --namespace="docker-registry" --dry-run -o yaml | kubectl apply -f -
+
+  when: not auth.stat.exists
+
