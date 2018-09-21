@@ -1,0 +1,6 @@
+---
+- name: Install apache2-utils to have htpasswd
+  apt: name=apache2-utils
+  when: 
+    - type_of_node == "front"
+    - enable_auth

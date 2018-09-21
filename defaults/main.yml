@@ -12,5 +12,7 @@ ssl_state: Valencia
 ssl_location: Valencia
 ssl_organization: UPV
 ssl_organizational_unit: I3M
+# Enable authentication
+enable_auth: true
 # Registry password
 password: password

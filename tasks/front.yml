@@ -10,6 +10,7 @@
 
 - name: Create htpasswd file and secret to store credentials
   include: "auth.yml"
+  when: enable_auth
 
 - name: Create Persistent Volume Claim
   block:

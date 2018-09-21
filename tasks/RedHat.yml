@@ -1,0 +1,6 @@
+---
+- name: Install httpd-tools to have htpasswd
+  package: name=httpd-tools state=installed
+  when: 
+    - type_of_node == "front"
+    - enable_auth
