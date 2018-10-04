@@ -38,9 +38,14 @@ spec:
           value: /certs/domain.crt
         - name: REGISTRY_HTTP_TLS_KEY
           value: /certs/domain.key
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: "{{ delete_enabled }}"         
 {% else %}
         image: registry:2
         ports:
         - containerPort: 5000
+        env:
+        - name: REGISTRY_STORAGE_DELETE_ENABLED
+          value: "{{ delete_enabled }}"
 {% endif %}
             
