@@ -48,4 +48,10 @@ spec:
         - name: REGISTRY_STORAGE_DELETE_ENABLED
           value: "{{ delete_enabled }}"
 {% endif %}
+{% if master_deploy %}
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+{% endif %}
             
