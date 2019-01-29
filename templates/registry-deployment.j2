@@ -48,6 +48,11 @@ spec:
         - name: REGISTRY_STORAGE_DELETE_ENABLED
           value: "{{ delete_enabled }}"
 {% endif %}
+        resources:
+          requests:
+            memory: 250Mi
+          limits:
+            memory: 250Mi
 {% if master_deploy %}
       tolerations:
       - key: node-role.kubernetes.io/master
