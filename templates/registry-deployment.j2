@@ -56,5 +56,7 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+      nodeSelector:
+        node-role.kubernetes.io/master: ''
 {% endif %}
             
