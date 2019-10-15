@@ -10,7 +10,7 @@
 
 - name: Create Persistent Volume Claim
   block:
-    - copy: src=registry-pvc.yml dest=/tmp/registry-pvc.yml
+    - template: src=registry-pvc.j2 dest=/tmp/registry-pvc.yml
     - command: kubectl apply -f /tmp/registry-pvc.yml
 
 - name: Create deployment

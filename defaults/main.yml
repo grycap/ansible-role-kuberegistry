@@ -16,3 +16,5 @@ ssl_organization: UPV
 ssl_organizational_unit: I3M
 # Deploy in Kubernetes Master node
 master_deploy: false
+# Labels used to match with created PersistentVolume
+volume_labels: {}
