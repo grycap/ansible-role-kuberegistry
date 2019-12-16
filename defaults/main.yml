@@ -6,8 +6,6 @@ type_of_node: "front"
 enable_secure: true
 # Allow to delete images from the registry
 delete_enabled: false
-# Service domain name (Example: registry.docker-registry)
-svc_name: ""
 # OpenSSL subjects to create the self-signed certificates
 ssl_country: ES
 ssl_state: Valencia
