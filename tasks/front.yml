@@ -22,3 +22,7 @@
   block:
     - template: src=registry-svc.j2 dest=/tmp/registry-svc.yml
     - command: kubectl apply -f /tmp/registry-svc.yml
+
+- name: Get service ClusterIP
+  command: kubectl get svc registry -n docker-registry -o=jsonpath='{.spec.clusterIP}'
+  register: registry_ip

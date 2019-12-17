@@ -2,3 +2,7 @@
 - name: Copy the generated certs
   include: "certs-to-wn.yml"
   when: enable_secure
+
+- name: Get service ClusterIP
+  local_action: command kubectl get svc registry -n docker-registry -o=jsonpath='{.spec.clusterIP}'
+  register: registry_ip
