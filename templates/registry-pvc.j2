@@ -4,9 +4,10 @@ metadata:
   name: registry-pv-claim
   namespace: docker-registry
 spec:
+{% if volume_labels %}
   selector:
-    matchLabels:
-      app: registry
+    matchLabels: {{ volume_labels }}
+{% endif %}
   accessModes:
     - ReadWriteOnce
   resources:

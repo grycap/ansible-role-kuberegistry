@@ -20,8 +20,5 @@ spec:
 {% if public_access %}
       nodePort: 31111
 {% endif %}
-{% if enable_secure %}
-  clusterIP: 10.106.195.1
-{% endif %}
   selector:
     app: registry

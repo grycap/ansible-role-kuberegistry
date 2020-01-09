@@ -5,5 +5,5 @@
 - name: Add service name and IP to /etc/hosts file in all nodes
   lineinfile:
     dest: /etc/hosts
-    line: '10.106.195.1 {{ svc_name }}'
+    line: '{{ registry_ip.stdout }} registry.docker-registry'
   when: enable_secure
