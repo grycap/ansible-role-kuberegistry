@@ -18,6 +18,8 @@
 
   - name: Save key and certs into a configMap 
     shell: kubectl create configmap registry-certs --from-file=/opt/docker_registry/certs/ --namespace="docker-registry" --dry-run -o yaml | kubectl apply -f -
+    environment:
+      KUBECONFIG: "{{ kubeconfig_path }}"
 
   - name: Create 'registry.docker-registry' directory in docker certs.d
     file:
