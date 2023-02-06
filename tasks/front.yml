@@ -3,6 +3,8 @@
   block:
     - copy: src=registry-namespace.yml dest=/tmp/registry-namespace.yml
     - command: kubectl apply -f /tmp/registry-namespace.yml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Create SSL key and certificate
   include: "ssl.yml"
@@ -12,17 +14,25 @@
   block:
     - template: src=registry-pvc.j2 dest=/tmp/registry-pvc.yml
     - command: kubectl apply -f /tmp/registry-pvc.yml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Create deployment
   block:
     - template: src=registry-deployment.j2 dest=/tmp/registry-deployment.yml
     - command: kubectl apply -f /tmp/registry-deployment.yml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Create Service
   block:
     - template: src=registry-svc.j2 dest=/tmp/registry-svc.yml
     - command: kubectl apply -f /tmp/registry-svc.yml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Get service ClusterIP
   command: kubectl get svc registry -n docker-registry -o=jsonpath='{.spec.clusterIP}'
   register: registry_ip
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"

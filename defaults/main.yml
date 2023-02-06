@@ -16,3 +16,5 @@ ssl_organizational_unit: I3M
 master_deploy: false
 # Labels used to match with created PersistentVolume
 volume_labels: {}
+# Default kubeconfig path
+kubeconfig_path: '/etc/kubernetes/admin.conf'

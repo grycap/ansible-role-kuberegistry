@@ -6,3 +6,5 @@
 - name: Get service ClusterIP
   local_action: command kubectl get svc registry -n docker-registry -o=jsonpath='{.spec.clusterIP}'
   register: registry_ip
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
