@@ -14,6 +14,8 @@
   block:
     - template: src=registry-pvc.j2 dest=/tmp/registry-pvc.yml
     - command: kubectl apply -f /tmp/registry-pvc.yml
+  environment:
+    KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Create deployment
   block:
