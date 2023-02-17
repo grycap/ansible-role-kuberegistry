@@ -3,6 +3,7 @@
   file:
     path: "/etc/docker/certs.d/registry.docker-registry"
     state: directory
+    recurse: true
 
 - name: Copy the CA certificate to docker certs.d/registry.docker-registry directory
   copy:
@@ -13,6 +14,7 @@
   file:
     path: "/etc/containerd/certs.d/registry.docker-registry"
     state: directory
+    recurse: true
 
 - name: Copy the CA certificate to docker certs.d/registry.docker-registry directory
   copy:
