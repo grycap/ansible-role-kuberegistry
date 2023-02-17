@@ -11,8 +11,30 @@
       path: "/opt/docker_registry/certs"
       state: directory
 
+  - name: Generate certificate requesst
+    copy:
+      dest: /opt/docker_registry/certs/req.conf
+      content: |
+        [req]
+        distinguished_name = req_distinguished_name
+        x509_extensions = v3_req
+        prompt = no
+        [req_distinguished_name]
+        C = {{ssl_country}}
+        ST = {{ssl_state}}
+        L = {{ssl_location}}
+        O = {{ssl_organization}}
+        OU = {{ssl_organizational_unit}}
+        CN = registry.docker-registry
+        [v3_req]
+        keyUsage = keyEncipherment, dataEncipherment
+        extendedKeyUsage = serverAuth
+        subjectAltName = @alt_names
+        [alt_names]
+        DNS.1 = registry.docker-registry
+
   - name: Create the CA private key and certificate
-    command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 365 -out domain.crt -subj "/C={{ ssl_country }}/ST={{ ssl_state }}/L={{ ssl_location }}/O={{ ssl_organization }}/OU={{ ssl_organizational_unit }}/CN=registry.docker-registry"
+    command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout domain.key -x509 -days 365 -out domain.crt -config req.conf -extensions 'v3_req'
     args:
       chdir: "/opt/docker_registry/certs"
 
@@ -30,6 +52,17 @@
     copy:
       src: /opt/docker_registry/certs/domain.crt
       dest: /etc/docker/certs.d/registry.docker-registry/ca.crt
+      remote_src: yes
+
+  - name: Create 'registry.docker-registry' directory in containerd certs.d
+    file:
+      path: "/etc/containerd/certs.d/registry.docker-registry"
+      state: directory
+
+  - name: Copy the CA certificate to containerd certs.d/registry.docker-registry directory
+    copy:
+      src: /opt/docker_registry/certs/domain.crt
+      dest: /etc/containerd/certs.d/registry.docker-registry/ca.crt
       remote_src: yes
 
   when: not certs.stat.exists

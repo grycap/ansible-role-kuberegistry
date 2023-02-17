@@ -8,3 +8,13 @@
   copy:
     src: /opt/docker_registry/certs/domain.crt
     dest: /etc/docker/certs.d/registry.docker-registry/ca.crt
+
+- name: Create 'registry.docker-registry' directory in docker certs.d
+  file:
+    path: "/etc/containerd/certs.d/registry.docker-registry"
+    state: directory
+
+- name: Copy the CA certificate to docker certs.d/registry.docker-registry directory
+  copy:
+    src: /opt/docker_registry/certs/domain.crt
+    dest: /etc/containerd/certs.d/registry.docker-registry/ca.crt
