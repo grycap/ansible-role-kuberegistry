@@ -26,5 +26,5 @@
     dest: /etc/containerd/certs.d/registry.docker-registry/hosts.toml
     content: |
       server = "https://registry.docker-registry"
-      [host."https://registry.docker-registry"] 
-        ca = "/etc/containerd/certs.d/registry.docker-registry/ca.crt" 
+      [host."https://registry.docker-registry"]
+        ca = "/etc/containerd/certs.d/registry.docker-registry/ca.crt"
