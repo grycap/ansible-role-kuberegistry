@@ -1,6 +1,6 @@
 ---
 - name: Copy the generated certs
-  include: "certs-to-wn.yml"
+  import_tasks: "certs-to-wn.yml"
   when: enable_secure
 
 - name: Get service ClusterIP
