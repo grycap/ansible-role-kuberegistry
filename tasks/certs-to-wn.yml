@@ -28,3 +28,9 @@
       server = "https://registry.docker-registry"
       [host."https://registry.docker-registry"]
         ca = "/etc/containerd/certs.d/registry.docker-registry/ca.crt"
+
+- name: Set registry config_path
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\.registry]\s*\n+(\s*)config_path\s*=.*'
+    replace: '[plugins."io.containerd.grpc.v1.cri".registry]\n\1config_path = "/etc/containerd/certs.d"'
