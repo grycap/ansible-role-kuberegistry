@@ -43,42 +43,16 @@
     environment:
       KUBECONFIG: "{{ kubeconfig_path }}"
 
-  - name: Create 'registry.docker-registry' directory in docker certs.d
-    file:
-      path: "/etc/docker/certs.d/registry.docker-registry"
-      state: directory
-      recurse: true
-
   - name: Copy the CA certificate to docker certs.d/registry.docker-registry directory
     copy:
       src: /opt/docker_registry/certs/domain.crt
       dest: /etc/docker/certs.d/registry.docker-registry/ca.crt
       remote_src: yes
 
-  - name: Create 'registry.docker-registry' directory in containerd certs.d
-    file:
-      path: "/etc/containerd/certs.d/registry.docker-registry"
-      state: directory
-      recurse: true
-
   - name: Copy the CA certificate to containerd certs.d/registry.docker-registry directory
     copy:
       src: /opt/docker_registry/certs/domain.crt
       dest: /etc/containerd/certs.d/registry.docker-registry/ca.crt
       remote_src: yes
-
-  - name: Create the hosts.toml file for containerd
-    copy:
-      dest: /etc/containerd/certs.d/registry.docker-registry/hosts.toml
-      content: |
-        server = "https://registry.docker-registry"
-        [host."https://registry.docker-registry"]
-          ca = "/etc/containerd/certs.d/registry.docker-registry/ca.crt"
-
-  - name: Set registry config_path
-    replace:
-      path: /etc/containerd/config.toml
-      regexp: '\[plugins\."io\.containerd\.grpc\.v1\.cri"\.registry]\s*\n+(\s*)config_path\s*=.*'
-      replace: '[plugins."io.containerd.grpc.v1.cri".registry]\n\1config_path = "/etc/containerd/certs.d"'
 
   when: not certs.stat.exists

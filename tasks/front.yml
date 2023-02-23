@@ -7,7 +7,7 @@
     KUBECONFIG: "{{ kubeconfig_path }}"
 
 - name: Create SSL key and certificate
-  include: "ssl.yml"
+  import_tasks: "ssl.yml"
   when: enable_secure
 
 - name: Create Persistent Volume Claim

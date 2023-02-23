@@ -1,6 +1,9 @@
 ---
+- name: Include "certs_dir" tasks
+  import_tasks: "certs_dir.yml"
+
 - name: Include "{{type_of_node}}" tasks
-  include: "{{type_of_node}}.yml"
+  include_tasks: "{{type_of_node}}.yml"
 
 - name: Add service name and IP to /etc/hosts file in all nodes
   lineinfile:
